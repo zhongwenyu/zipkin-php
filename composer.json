@@ -1,0 +1,19 @@
+{
+    "name": "ybrenlib/zipkinphp",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "zhongwenyu",
+            "email": "zhongwenyu@beidukeji.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "openzipkin/zipkin": "1.2.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "ybrenLib\\zipkinphp\\": "src\\ybrenLib\\zipkinphp"
+        }
+    }
+}

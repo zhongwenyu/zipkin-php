@@ -1,2 +1,0 @@
-# zipkin-php
-zipkin php
