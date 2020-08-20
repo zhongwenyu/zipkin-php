@@ -10,7 +10,7 @@
     "minimum-stability": "stable",
     "require": {
         "openzipkin/zipkin": "1.2.2",
-        "ybrenlib/zipkinphp": "1.0.1"
+        "ybrenlib/logger": "1.0.1"
     },
     "autoload": {
         "psr-4": {
