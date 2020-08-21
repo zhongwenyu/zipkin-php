@@ -7,7 +7,6 @@
             "email": "zhongwenyu@beidukeji.com"
         }
     ],
-    "minimum-stability": "stable",
     "require": {
         "openzipkin/zipkin": "1.2.2",
         "ybrenlib/logger": "1.0.1"
