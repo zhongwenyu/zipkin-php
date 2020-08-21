@@ -12,4 +12,8 @@ class ZipkinConstants{
     public static $Child_span_name = "zipkinChildSpan";
 
     public static $Init = "init";
+
+    public static $New_trace = "newTrace";
+
+    public static $Has_childspan = "hasChildspan";
 }

@@ -32,9 +32,13 @@ class ContextUtil
     {
         $cid = self::getCoroutineUid();
         if($key){
-            unset(self::$pool[$cid][$key]);
+            if(isset(self::$pool[$cid][$key])){
+                unset(self::$pool[$cid][$key]);
+            }
         }else{
-            unset(self::$pool[$cid]);
+            if(isset(self::$pool[$cid])){
+                unset(self::$pool[$cid]);
+            }
         }
     }
 }

@@ -39,6 +39,9 @@ class ZipkinHandler{
             !is_null($dbZipkinBean->getException()) && $childSpan->tag("error" , $dbZipkinBean->getException()->getMessage());
             $childSpan->annotate("request_finish" , $nowTimestamp);
             $childSpan->finish();
+
+            // 标记新产生了span
+            ContextUtil::put(ZipkinConstants::$Has_childspan , true);
         }
     }
 
@@ -78,6 +81,9 @@ class ZipkinHandler{
         !is_null($serviceZipkinBean->getException()) && $childSpan->tag("error" , $serviceZipkinBean->getException()->getMessage());
         $childSpan->annotate("request_finish" , Timestamp\now());
         $childSpan->finish();
+
+        // 标记新产生了span
+        ContextUtil::put(ZipkinConstants::$Has_childspan , true);
     }
 
     /**
@@ -119,6 +125,9 @@ class ZipkinHandler{
         $childSpan->tag("message_bus.id" , $producerZipkinBean->getMessageId());
         $childSpan->annotate("request_finish" , Timestamp\now());
         $childSpan->finish();
+
+        // 标记新产生了span
+        ContextUtil::put(ZipkinConstants::$Has_childspan , true);
     }
 
     /**

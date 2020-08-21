@@ -21,6 +21,9 @@ class ZipkinClient{
      * @param array $headers
      */
     public static function start($headers = []){
+        // 清空原有数据
+        ContextUtil::delete();
+
         try{
             $ip = MDC::get(FlumeLogConstants::$ClientIp);
 
@@ -42,6 +45,8 @@ class ZipkinClient{
                 $trace = $tracing->getTracer();
                 $span = $trace->nextSpan($extractedContext);
             }else{
+                ContextUtil::put(ZipkinConstants::$New_trace , true);
+
                 $trace = $tracing->getTracer();
                 /* Always sample traces */
                 $defaultSamplingFlags = DefaultSamplingFlags::createAsSampled();
@@ -82,14 +87,29 @@ class ZipkinClient{
     }
 
     public static function flush(\Throwable $e = null){
-        $trace = ContextUtil::get(ZipkinConstants::$Trace_name);
-        $span = ContextUtil::get(ZipkinConstants::$Span_name);
-        if(!is_null($span) && !is_null($trace)){
-            $span->annotate('request_finish', Timestamp\now());
-            $span->finish();
-            $trace->flush();
+        if(self::shouldSaveTraces()){
+            $trace = ContextUtil::get(ZipkinConstants::$Trace_name);
+            $span = ContextUtil::get(ZipkinConstants::$Span_name);
+            if(!is_null($span) && !is_null($trace)){
+                $span->annotate('request_finish', Timestamp\now());
+                $span->finish();
+                $trace->flush();
+            }
         }
-
         ContextUtil::delete();
+    }
+
+    /**
+     * 判断是否应保存trace信息
+     * @return bool
+     */
+    private static function shouldSaveTraces(){
+        $isNewTrace = ContextUtil::get(ZipkinConstants::$New_trace);
+        $hasChildspan = ContextUtil::get(ZipkinConstants::$Has_childspan);
+
+        if($isNewTrace === true && is_null($hasChildspan)){
+            return false;
+        }
+        return true;
     }
 }
