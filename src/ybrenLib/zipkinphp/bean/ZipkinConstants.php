@@ -16,4 +16,6 @@ class ZipkinConstants{
     public static $New_trace = "newTrace";
 
     public static $Has_childspan = "hasChildspan";
+
+    public static $Request_start = "requestStart";
 }
