@@ -108,10 +108,14 @@ class ZipkinClient{
     private static function shouldSaveTraces($endTime){
         $isNewTrace = ContextUtil::get(ZipkinConstants::$New_trace);
         $hasChildspan = ContextUtil::get(ZipkinConstants::$Has_childspan);
-        $startTime = ContextUtil::get(ZipkinConstants::$Request_start);
+        $startTime = ContextUtil::get(ZipkinConstants::$Request_start , 0);
+        $duration = $endTime - $startTime;
+        $simpled = self::getSimpled();
 
-        if($isNewTrace === true && (is_null($hasChildspan) || (!empty($startTime) && ($endTime - $startTime) < 500*100 && !self::getSimpled()))){
+        if($isNewTrace === true && (is_null($hasChildspan) || ($duration < 500*100 && !$simpled))){
             // 判断条件，链路起始，没有子span或者耗时小于500ms并且不满足采样率
+            LoggerFactory::getLogger(ZipkinClient::class)->info("not need to save zipkin , hasChildSpan[".
+                ($hasChildspan ? 1 : 0)."] duration [".$duration."] simpled [".($simpled ? 1 : 0)."]");
             return false;
         }
         return true;
