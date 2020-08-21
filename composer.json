@@ -9,7 +9,7 @@
     ],
     "require": {
         "openzipkin/zipkin": "1.2.2",
-        "ybrenlib/logger": "1.0.1"
+        "ybrenlib/logger": "^1.0.2"
     },
     "autoload": {
         "psr-4": {
