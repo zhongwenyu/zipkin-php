@@ -2,6 +2,7 @@
 namespace ybrenLib\zipkinphp\handler;
 
 use ybrenLib\zipkinphp\bean\DbZipkinBean;
+use ybrenLib\zipkinphp\bean\ProducerZipkinBean;
 use ybrenLib\zipkinphp\bean\ServiceZipkinBean;
 use ybrenLib\zipkinphp\bean\ZipkinConstants;
 use ybrenLib\zipkinphp\SpanFactory;
@@ -75,6 +76,43 @@ class ZipkinHandler{
 
         // 采样
         !is_null($serviceZipkinBean->getException()) && $childSpan->tag("error" , $serviceZipkinBean->getException()->getMessage());
+        $childSpan->annotate("request_finish" , Timestamp\now());
+        $childSpan->finish();
+    }
+
+    /**
+     * @param ProducerZipkinBean $producerZipkinBean
+     * @param $headers
+     * @return \Zipkin\Span|null
+     */
+    public static function produceStart(ProducerZipkinBean $producerZipkinBean , &$headers){
+        if(!ZipkinClient::getInitStatus()){
+            return null;
+        }
+
+        $childSpan = SpanFactory::createProducerSpan($producerZipkinBean);
+        if(!is_null($childSpan)){
+            $tracing = ContextUtil::get(ZipkinConstants::$Tracing_name);
+            $injector = $tracing->getPropagation()->getInjector(new Map());
+            $injector($childSpan->getContext(), $headers);
+        }
+        return $childSpan;
+    }
+
+    /**
+     * @param $childSpan
+     * @param \Exception|null $exception
+     */
+    public static function produceEnd($childSpan , \Exception $exception = null){
+        if(!ZipkinClient::getInitStatus()){
+            return;
+        }
+        if(is_null($childSpan)){
+            return;
+        }
+        if($exception != null){
+            $childSpan->tag("error" , $exception->getMessage());
+        }
         $childSpan->annotate("request_finish" , Timestamp\now());
         $childSpan->finish();
     }
