@@ -2,6 +2,7 @@
 namespace ybrenLib\zipkinphp;
 
 use ybrenLib\zipkinphp\bean\DbZipkinBean;
+use ybrenLib\zipkinphp\bean\ProducerZipkinBean;
 use ybrenLib\zipkinphp\bean\ServiceZipkinBean;
 use ybrenLib\zipkinphp\bean\ZipkinConstants;
 use ybrenLib\zipkinphp\utils\ContextUtil;
@@ -65,6 +66,32 @@ class SpanFactory{
         $childSpan->tag("http.url" , $url);
         $childSpan->tag("http.method" , $method);
         $childSpan->tag("http.request" , $request);
+        $childSpan->annotate('request_started', \Zipkin\Timestamp\now());
+        $childSpan->start();
+
+        return $childSpan;
+    }
+
+    /**
+     * @return Span|null
+     */
+    public static function createProducerSpan(ProducerZipkinBean $producerZipkinBean){
+        $trace = ContextUtil::get(ZipkinConstants::$Trace_name);
+        if(is_null($trace)){
+            return null;
+        }
+        $span = ZipkinClient::getSpan();
+        $childSpan = $trace->newChild($span->getContext());
+        $childSpan->start();
+        $childSpan->setKind(\Zipkin\Kind\PRODUCER);
+        $childSpan->setName($producerZipkinBean->getDestination());
+        $childSpan->tag("message_bus.type" , $producerZipkinBean->getMessageType());
+        $childSpan->tag("message_bus.destination" , $producerZipkinBean->getDestination());
+        $childSpan->tag("message_bus.body" , $producerZipkinBean->getBody());
+        $childSpan->tag("message_bus.groupId" , $producerZipkinBean->getBody());
+        $childSpan->tag("message_bus.endpoint" , $producerZipkinBean->getEndpoint());
+        $childSpan->tag("message_bus.username" , $producerZipkinBean->getUsername());
+        $childSpan->tag("message_bus.key" , $producerZipkinBean->getMessageKey());
         $childSpan->annotate('request_started', \Zipkin\Timestamp\now());
         $childSpan->start();
 
