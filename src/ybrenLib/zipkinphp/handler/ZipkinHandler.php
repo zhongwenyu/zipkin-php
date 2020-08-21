@@ -72,8 +72,7 @@ class ZipkinHandler{
         $serviceZipkinBean->setFinishTimestamp(Timestamp\now());
 
         // 记录响应
-        !is_null($serviceZipkinBean->getResponse()) && $childSpan->tag("http.response" , $serviceZipkinBean->getResponse
-        ());
+        !is_null($serviceZipkinBean->getResponse()) && $childSpan->tag("http.response" , $serviceZipkinBean->getResponse());
 
         // 采样
         !is_null($serviceZipkinBean->getException()) && $childSpan->tag("error" , $serviceZipkinBean->getException()->getMessage());
