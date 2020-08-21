@@ -88,11 +88,11 @@ class SpanFactory{
         $childSpan->tag("message_bus.type" , $producerZipkinBean->getMessageType());
         $childSpan->tag("message_bus.destination" , $producerZipkinBean->getDestination());
         $childSpan->tag("message_bus.body" , $producerZipkinBean->getBody());
-        $childSpan->tag("message_bus.groupId" , $producerZipkinBean->getBody());
+        $childSpan->tag("message_bus.groupId" , $producerZipkinBean->getGroupId());
         $childSpan->tag("message_bus.endpoint" , $producerZipkinBean->getEndpoint());
         $childSpan->tag("message_bus.instanceId" , $producerZipkinBean->getInstanceId());
         $childSpan->tag("message_bus.key" , $producerZipkinBean->getMessageKey());
-        $childSpan->tag("message_bus.id" , $producerZipkinBean->getMessageKey());
+        $childSpan->tag("message_bus.id" , $producerZipkinBean->getMessageId());
         $childSpan->annotate('request_started', \Zipkin\Timestamp\now());
         $childSpan->start();
 
