@@ -17,6 +17,8 @@ class ProducerZipkinBean{
 
     private $messageKey = "";
 
+    private $messageId = "";
+
     private $response;
 
     private $exception;
@@ -163,5 +165,21 @@ class ProducerZipkinBean{
     public function setException($exception)
     {
         $this->exception = $exception;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMessageId()
+    {
+        return $this->messageId;
+    }
+
+    /**
+     * @param string $messageId
+     */
+    public function setMessageId($messageId)
+    {
+        $this->messageId = $messageId;
     }
 }
