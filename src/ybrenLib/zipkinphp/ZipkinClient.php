@@ -109,13 +109,10 @@ class ZipkinClient{
         $isNewTrace = ContextUtil::get(ZipkinConstants::$New_trace);
         $hasChildspan = ContextUtil::get(ZipkinConstants::$Has_childspan);
         $startTime = ContextUtil::get(ZipkinConstants::$Request_start , 0);
-        $duration = $endTime - $startTime;
-        $simpled = self::getSimpled();
+     //   $duration = $endTime - $startTime;
+     //   $simpled = self::getSimpled();
 
-        if($isNewTrace === true && (is_null($hasChildspan) || ($duration < 500*100 && !$simpled))){
-            // 判断条件，链路起始，没有子span或者耗时小于500ms并且不满足采样率
-            LoggerFactory::getLogger(ZipkinClient::class)->info("not need to save zipkin , hasChildSpan[".
-                ($hasChildspan ? 1 : 0)."] duration [".$duration."] simpled [".($simpled ? 1 : 0)."]");
+        if($isNewTrace === true && is_null($hasChildspan)){
             return false;
         }
         return true;
@@ -124,7 +121,7 @@ class ZipkinClient{
     /**
      * 获取采样率 100采1
      */
-    private static function getSimpled(){
+    /*private static function getSimpled(){
         return rand(0 , 100) == 1;
-    }
+    }*/
 }
