@@ -90,7 +90,7 @@ class SpanFactory{
         $childSpan->tag("message_bus.body" , $producerZipkinBean->getBody());
         $childSpan->tag("message_bus.groupId" , $producerZipkinBean->getBody());
         $childSpan->tag("message_bus.endpoint" , $producerZipkinBean->getEndpoint());
-        $childSpan->tag("message_bus.username" , $producerZipkinBean->getUsername());
+        $childSpan->tag("message_bus.instanceId" , $producerZipkinBean->getInstanceId());
         $childSpan->tag("message_bus.key" , $producerZipkinBean->getMessageKey());
         $childSpan->annotate('request_started', \Zipkin\Timestamp\now());
         $childSpan->start();

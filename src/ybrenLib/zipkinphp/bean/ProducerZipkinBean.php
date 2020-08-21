@@ -13,7 +13,7 @@ class ProducerZipkinBean{
 
     private $endpoint;
 
-    private $username;
+    private $instanceId;
 
     private $messageKey;
 
@@ -100,17 +100,17 @@ class ProducerZipkinBean{
     /**
      * @return mixed
      */
-    public function getUsername()
+    public function getInstanceId()
     {
-        return $this->username;
+        return $this->instanceId;
     }
 
     /**
-     * @param mixed $username
+     * @param mixed $instanceId
      */
-    public function setUsername($username)
+    public function setInstanceId($instanceId)
     {
-        $this->username = $username;
+        $this->instanceId = $instanceId;
     }
 
     /**
