@@ -3,19 +3,23 @@ namespace ybrenLib\zipkinphp\bean;
 
 class ProducerZipkinBean{
 
-    private $messageType;
+    private $messageType = "";
 
-    private $destination;
+    private $destination = "";
 
-    private $body;
+    private $body = "";
 
-    private $groupId;
+    private $groupId = "";
 
-    private $endpoint;
+    private $endpoint = "";
 
-    private $instanceId;
+    private $instanceId = "";
 
-    private $messageKey;
+    private $messageKey = "";
+
+    private $response;
+
+    private $exception;
 
     /**
      * @return mixed
@@ -127,5 +131,37 @@ class ProducerZipkinBean{
     public function setMessageKey($messageKey)
     {
         $this->messageKey = $messageKey;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getResponse()
+    {
+        return $this->response;
+    }
+
+    /**
+     * @param mixed $response
+     */
+    public function setResponse($response)
+    {
+        $this->response = $response;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getException()
+    {
+        return $this->exception;
+    }
+
+    /**
+     * @param mixed $exception
+     */
+    public function setException($exception)
+    {
+        $this->exception = $exception;
     }
 }

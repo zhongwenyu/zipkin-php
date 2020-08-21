@@ -103,15 +103,18 @@ class ZipkinHandler{
      * @param $childSpan
      * @param \Exception|null $exception
      */
-    public static function produceEnd($childSpan , \Exception $exception = null){
+    public static function produceEnd($childSpan , ProducerZipkinBean $producerZipkinBean){
         if(!ZipkinClient::getInitStatus()){
             return;
         }
         if(is_null($childSpan)){
             return;
         }
-        if($exception != null){
-            $childSpan->tag("error" , $exception->getMessage());
+        if($producerZipkinBean->getException() != null){
+            $childSpan->tag("error" , $producerZipkinBean->getException()->getMessage());
+        }
+        if($producerZipkinBean->getResponse() != null){
+            $childSpan->tag("response" , $producerZipkinBean->getResponse());
         }
         $childSpan->annotate("request_finish" , Timestamp\now());
         $childSpan->finish();
