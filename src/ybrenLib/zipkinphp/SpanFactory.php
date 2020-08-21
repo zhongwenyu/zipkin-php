@@ -92,7 +92,6 @@ class SpanFactory{
         $childSpan->tag("message_bus.endpoint" , $producerZipkinBean->getEndpoint());
         $childSpan->tag("message_bus.instanceId" , $producerZipkinBean->getInstanceId());
         $childSpan->tag("message_bus.key" , $producerZipkinBean->getMessageKey());
-        $childSpan->tag("message_bus.id" , $producerZipkinBean->getMessageId());
         $childSpan->annotate('request_started', \Zipkin\Timestamp\now());
         $childSpan->start();
 

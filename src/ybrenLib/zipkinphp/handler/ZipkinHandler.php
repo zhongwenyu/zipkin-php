@@ -116,6 +116,7 @@ class ZipkinHandler{
         if($producerZipkinBean->getResponse() != null){
             $childSpan->tag("message_bus.response" , $producerZipkinBean->getResponse());
         }
+        $childSpan->tag("message_bus.id" , $producerZipkinBean->getMessageId());
         $childSpan->annotate("request_finish" , Timestamp\now());
         $childSpan->finish();
     }
