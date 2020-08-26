@@ -40,6 +40,8 @@ class ZipkinClient{
             }
 
             if(isset($headers[strtolower(B3::SPAN_ID_NAME)]) && isset($headers[strtolower(B3::TRACE_ID_NAME)])){
+                ContextUtil::put(ZipkinConstants::$New_trace , false);
+
                 $extractor = $tracing->getPropagation()->getExtractor(new Map());
                 $extractedContext = $extractor($headers);
                 $trace = $tracing->getTracer();
