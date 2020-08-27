@@ -34,12 +34,13 @@ final class LogReport implements Reporter
         $str = "";
         $len = count($spans);
         $cursor = 1;
+        $indexName = "zipkin:span-".date("Y-m-d");
         foreach ($spans as $span) {
             $spanArray = $span->toArray();
             $spanContent = json_encode($spanArray);
             $indexContent = json_encode([
                 $this->bulkIndexName => [
-                    "_index" => "zipkin:span-".date("Y-m-d"),
+                    "_index" => $indexName,
                     "_type" => $this->indexTypeName,
                     "_id" => $spanArray['id'] . StringUtil::getRandomStr("zipkin"),
                 ],
