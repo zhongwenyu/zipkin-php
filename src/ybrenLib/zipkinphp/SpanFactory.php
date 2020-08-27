@@ -82,7 +82,6 @@ class SpanFactory{
         }
         $span = ZipkinClient::getSpan();
         $childSpan = $trace->newChild($span->getContext());
-        $childSpan->start();
         $childSpan->setKind(\Zipkin\Kind\PRODUCER);
         $childSpan->setName($producerZipkinBean->getDestination());
         $childSpan->tag("message_bus.type" , $producerZipkinBean->getMessageType());
