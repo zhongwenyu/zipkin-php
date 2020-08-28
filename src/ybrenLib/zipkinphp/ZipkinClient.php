@@ -91,7 +91,7 @@ class ZipkinClient{
 
     public static function flush(\Throwable $e = null){
         $endTime = Timestamp\now();
-        if(self::shouldSaveTraces($endTime)){
+        if(self::shouldSaveTraces($endTime , $e)){
             $trace = ContextUtil::get(ZipkinConstants::$Trace_name);
             $span = ContextUtil::get(ZipkinConstants::$Span_name);
             if(!is_null($span) && !is_null($trace)){
@@ -107,15 +107,33 @@ class ZipkinClient{
      * 判断是否应保存trace信息
      * @return bool
      */
-    private static function shouldSaveTraces($endTime){
+    private static function shouldSaveTraces($endTime , \Throwable $e = null){
         $isNewTrace = ContextUtil::get(ZipkinConstants::$New_trace);
         $hasChildspan = ContextUtil::get(ZipkinConstants::$Has_childspan);
+        $hasError = ContextUtil::get(ZipkinConstants::$Has_error);
         $startTime = ContextUtil::get(ZipkinConstants::$Request_start , 0);
-     //   $duration = $endTime - $startTime;
-     //   $simpled = self::getSimpled();
+        $duration = $endTime - $startTime;
 
-        if($isNewTrace === true && is_null($hasChildspan)){
-            return false;
+        // 存在错误，需要上传
+        if($hasError != null || $e != null){
+            return true;
+        }
+
+        $config = ZipkinConfig::getConfig();
+        $newTraceDuration = $config['newTraceDuration'] ?? 300;
+        $childTraceDuration = $config['childTraceDuration'] ?? 100;
+        $simpled = self::getSimpled($config['sampleRate'] ?? 100);
+
+        if($isNewTrace){
+            // 链路起始
+            if((is_null($hasChildspan) || $duration < $newTraceDuration*1000) && !$simpled){
+                return false;
+            }
+        }else{
+            // 子链路
+            if($duration < $childTraceDuration*1000 && !$simpled){
+                return false;
+            }
         }
         return true;
     }
@@ -123,7 +141,7 @@ class ZipkinClient{
     /**
      * 获取采样率 100采1
      */
-    /*private static function getSimpled(){
-        return rand(0 , 100) == 1;
-    }*/
+    private static function getSimpled($sampleRate){
+        return rand(1 , $sampleRate) == 1;
+    }
 }

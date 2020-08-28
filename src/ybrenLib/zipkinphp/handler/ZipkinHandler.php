@@ -36,9 +36,13 @@ class ZipkinHandler{
             $nowTimestamp = Timestamp\now();
 
             // 采样
-            !is_null($dbZipkinBean->getException()) && $childSpan->tag("error" , $dbZipkinBean->getException()->getMessage());
+            if(!is_null($dbZipkinBean->getException())){
+                ContextUtil::put(ZipkinConstants::$Has_error , 1);
+                $childSpan->tag("error" , $dbZipkinBean->getException()->getMessage());
+            }
+
             $childSpan->annotate("request_finish" , $nowTimestamp);
-            $childSpan->flush();
+            $childSpan->finish();
 
             // 标记新产生了span
             ContextUtil::put(ZipkinConstants::$Has_childspan , true);
@@ -78,9 +82,12 @@ class ZipkinHandler{
         !is_null($serviceZipkinBean->getResponse()) && $childSpan->tag("http.response" , $serviceZipkinBean->getResponse());
 
         // 采样
-        !is_null($serviceZipkinBean->getException()) && $childSpan->tag("error" , $serviceZipkinBean->getException()->getMessage());
+        if(!is_null($serviceZipkinBean->getException())){
+            ContextUtil::put(ZipkinConstants::$Has_error , 1);
+            $childSpan->tag("error" , $serviceZipkinBean->getException()->getMessage());
+        }
         $childSpan->annotate("request_finish" , Timestamp\now());
-        $childSpan->flush();
+        $childSpan->finish();
 
         // 标记新产生了span
         ContextUtil::put(ZipkinConstants::$Has_childspan , true);
@@ -117,6 +124,7 @@ class ZipkinHandler{
             return;
         }
         if($producerZipkinBean->getException() != null){
+            ContextUtil::put(ZipkinConstants::$Has_error , 1);
             $childSpan->tag("error" , $producerZipkinBean->getException()->getMessage());
         }
         if($producerZipkinBean->getResponse() != null){
@@ -124,7 +132,7 @@ class ZipkinHandler{
         }
         $childSpan->tag("message_bus.id" , $producerZipkinBean->getMessageId());
         $childSpan->annotate("request_finish" , Timestamp\now());
-        $childSpan->flush();
+        $childSpan->finish();
 
         // 标记新产生了span
         ContextUtil::put(ZipkinConstants::$Has_childspan , true);

@@ -18,4 +18,6 @@ class ZipkinConstants{
     public static $Has_childspan = "hasChildspan";
 
     public static $Request_start = "requestStart";
+
+    public static $Has_error = "hasError";
 }
