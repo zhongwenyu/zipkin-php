@@ -37,6 +37,7 @@ final class LogReport implements Reporter
         $indexName = "zipkin:span-".date("Y-m-d");
         foreach ($spans as $span) {
             $spanArray = $span->toArray();
+            $spanArray['timestamp_millis'] = intval($spanArray['timestamp']/1000);
             $spanContent = json_encode($spanArray);
             $indexContent = json_encode([
                 $this->bulkIndexName => [
